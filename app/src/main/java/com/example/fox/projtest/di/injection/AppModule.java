@@ -3,6 +3,8 @@ package com.example.fox.projtest.di.injection;
 
 import android.content.Context;
 
+import com.example.fox.projtest.data.repositories.repository.ItemRepository;
+import com.example.fox.projtest.data.repositories.repository.RepositoryImpl;
 import com.example.fox.projtest.di.executors.PostExecutionThread;
 
 import javax.inject.Singleton;
@@ -26,10 +28,10 @@ public class AppModule {
     }
 
 
-//    @Provides
-//    public static UserRepository provideCoinRepository(UserRepositoryImpl userRepository) {
-//        return userRepository;
-//    }
+    @Provides
+    public static ItemRepository provideItemRepository(RepositoryImpl Repository) {
+        return Repository;
+    }
 
     @Singleton
     @Provides

@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.fox.projtest.R;
+import com.example.fox.projtest.entity.Item;
 import com.example.fox.projtest.ui.base.BaseActivity;
 import com.example.fox.projtest.ui.info.InfoActivity;
 
@@ -48,20 +49,26 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
+    public void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void hideProgress() {
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void setItems(List<String> items) {
+    public void setItems(List<Item> items) {
         recyclerView.setAdapter(new MainAdapter(items, presenter::onItemClicked));
     }
 
     @Override
-    public void startInfoActivity(String url, String message) {
+    public void startInfoActivity(String url, String title, String message) {
         Intent intent = new Intent(this, InfoActivity.class);
         intent.putExtra("GET_URL", url);
+        intent.putExtra("GET_TITLE", title);
         intent.putExtra("GET_MESSAGE", message);
         startActivity(intent);
     }

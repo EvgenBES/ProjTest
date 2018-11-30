@@ -15,19 +15,21 @@ public class InfoActivity extends BaseActivity implements InfoView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         ImageView infoImageView = findViewById(R.id.info_imageView);
-        TextView infoTextView = findViewById(R.id.info_textView);
+        TextView infoTextTitle = findViewById(R.id.info_text_title);
+        TextView infoTextMessage = findViewById(R.id.info_text_message);
 
         Intent intent = getIntent();
         String url = intent.getStringExtra("GET_URL");
+        String title = intent.getStringExtra("GET_TITLE");
         String message = intent.getStringExtra("GET_MESSAGE");
-
 
         Picasso.get()
                 .load(url)
                 .placeholder(R.drawable.ic_hourglass)
                 .into(infoImageView);
 
-        infoTextView.setText(message);
+        infoTextTitle.setText(title);
+        infoTextMessage.setText(message);
     }
 
     @Override
