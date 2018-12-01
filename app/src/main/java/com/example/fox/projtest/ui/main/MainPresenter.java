@@ -5,6 +5,7 @@ import com.example.fox.projtest.di.app.App;
 import com.example.fox.projtest.entity.Item;
 import com.example.fox.projtest.ui.base.BaseViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,7 +16,7 @@ import io.reactivex.disposables.Disposable;
 public class MainPresenter extends BaseViewModel {
 
     private MainView mainView;
-    private FindItemsInteractor findItemsInteractor;
+    private List<Item> listItems = new ArrayList<>();
 
     @Inject
     public GetItemUseCase getItemUseCase;
@@ -25,18 +26,14 @@ public class MainPresenter extends BaseViewModel {
         App.getAppComponent().runInject(this);
     }
 
-    MainPresenter(MainView mainView, FindItemsInteractor findItemsInteractor) {
+    MainPresenter(MainView mainView) {
         this.mainView = mainView;
-        this.findItemsInteractor = findItemsInteractor;
     }
 
-    void onResume() {
-        if (mainView != null) {
-            mainView.showProgress();
-        }
 
+    void init () {
         getItemUseCase
-                .getAll()
+                .getPosts()
                 .subscribe(new Observer<List<Item>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -45,7 +42,7 @@ public class MainPresenter extends BaseViewModel {
 
                     @Override
                     public void onNext(List<Item> items) {
-                        onFinished(items);
+                        listItems.addAll(items);
                     }
 
                     @Override
@@ -59,7 +56,34 @@ public class MainPresenter extends BaseViewModel {
                     }
                 });
 
-//        findItemsInteractor.findItems(this::onFinished);
+        getItemUseCase
+                .getPhotos()
+                .subscribe(new Observer<List<String>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+                    }
+
+                    @Override
+                    public void onNext(List<String> strings) {
+                        if (listItems.size() != 0) {
+                            for (int i = 0; i < strings.size() - 1; i++) {
+                                listItems.get(i).setImageUrl(strings.get(i));
+                            }
+                        }
+                        onFinished(listItems);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mainView.showError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     void onItemClicked(String url, String title, String message) {
@@ -78,12 +102,5 @@ public class MainPresenter extends BaseViewModel {
             mainView.hideProgress();
         }
     }
-
-
-
-    public MainView getMainView() {
-        return mainView;
-    }
-
 
 }

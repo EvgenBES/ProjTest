@@ -1,16 +1,17 @@
 package com.example.fox.projtest.data.net;
 
 
-
-import com.example.fox.projtest.entity.ErrorType;
 import com.example.fox.projtest.entity.Error;
+import com.example.fox.projtest.entity.ErrorType;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import io.reactivex.functions.Function;
+import java.net.UnknownHostException;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.functions.Function;
 import retrofit2.HttpException;
 
 public class ErrorParserTransformer<S> {
@@ -30,23 +31,25 @@ public class ErrorParserTransformer<S> {
                                 if (throwable instanceof HttpException) {
                                     HttpException httpException = (HttpException) throwable;
 
-                                    error = new Error("Ошибка, попробуйте еще раз", ErrorType.UNEXPECTED_ERROR);
-
+                                    error = new Error("Error try again", ErrorType.UNEXPECTED_ERROR);
                                     try {
-                                        if (httpException.response().errorBody().string().contains("login-already")) {
-                                            error = new Error("Данный email занят",
-                                                    ErrorType.VALID_ERROR);
+                                        if (httpException.code() == 404) {
+                                            error = new Error("Error 404 Not Found",
+                                                    ErrorType.SERVER_ERROR);
                                         } else if (httpException.response().errorBody().string().contains("valid")) {
-                                            error = new Error("Ошибка в имени email(a)",
+                                            error = new Error("Error validation",
                                                     ErrorType.VALID_ERROR);
                                         }
                                     } catch (IOException e) {
-                                        error = new Error("Ошибка, попробуйте еще раз.",
+                                        error = new Error("Error try again",
                                                 ErrorType.VALID_ERROR);
 
                                     }
 
                                 } else if (throwable instanceof SocketTimeoutException) {
+                                    error = new Error("Internet is not available",
+                                            ErrorType.INTERNET_IS_NOT_AVAILABLE);
+                                } else if (throwable instanceof UnknownHostException) {
                                     error = new Error("Internet is not available",
                                             ErrorType.INTERNET_IS_NOT_AVAILABLE);
                                 } else {

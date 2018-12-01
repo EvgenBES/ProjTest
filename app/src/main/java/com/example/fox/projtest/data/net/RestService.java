@@ -1,7 +1,5 @@
 package com.example.fox.projtest.data.net;
 
-import android.util.Log;
-
 import com.example.fox.projtest.data.model.photo.PhotoResponse;
 import com.example.fox.projtest.data.model.post.PostResponse;
 import com.google.gson.Gson;
@@ -23,7 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Singleton
 public class RestService {
 
-    private RestApi restApi;
+    private RestApi restPostApi;
+    private RestApi restPhotoApi;
     private Gson gson;
     private ErrorParserTransformer errorParserTransformer;
 
@@ -47,10 +46,18 @@ public class RestService {
         gson = new GsonBuilder()
                 .create();
 
-        this.restApi = new Retrofit.Builder()
+        this.restPostApi = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("https://jsonplaceholder.typicode.com")
+                .baseUrl("https://jsonplaceholder.typicode.com/")
+                .client(okHttp)
+                .build()
+                .create(RestApi.class);
+
+        this.restPhotoApi = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl("https://api.flickr.com/services/")
                 .client(okHttp)
                 .build()
                 .create(RestApi.class);
@@ -59,13 +66,13 @@ public class RestService {
     }
 
     public Observable<List<PostResponse>> getPosts() {
-        return restApi
+        return restPostApi
                 .getPosts()
                 .compose(errorParserTransformer.<PostResponse, Throwable>parseHttpError());
     }
 
     public Observable<PhotoResponse> getPhotos() {
-        return restApi
+        return restPhotoApi
                 .getPhotos()
                 .compose(errorParserTransformer.<PhotoResponse, Throwable>parseHttpError());
     }

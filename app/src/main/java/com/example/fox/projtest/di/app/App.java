@@ -3,7 +3,6 @@ package com.example.fox.projtest.di.app;
 import android.app.Activity;
 import android.app.Application;
 
-
 import com.example.fox.projtest.di.injection.AppComponent;
 import com.example.fox.projtest.di.injection.AppModule;
 import com.example.fox.projtest.di.injection.DaggerAppComponent;

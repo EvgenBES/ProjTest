@@ -3,6 +3,7 @@ package com.example.fox.projtest.ui.main;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,14 +40,20 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
         final Item item = items.get(position);
+
         holder.itemTextTitle.setText(item.getTitle());
         holder.itemTextMessage.setText(item.getMessage());
-        Picasso.get()
-                .load("https://farm5.staticflickr.com/4891/32233229348_1f88c30135_z.jpg")
-                .placeholder(R.drawable.ic_hourglass)
-                .into(holder.itemImageView);
+        String url = item.getImageUrl();
 
-        holder.constraintLayout.setOnClickListener(v -> listener.onItemClicked("https://farm5.staticflickr.com/4891/32233229348_1f88c30135_z.jpg", item.getTitle(), item.getMessage()));
+        try {
+            Picasso.get()
+                    .load(url)
+                    .placeholder(R.drawable.ic_hourglass)
+                    .into(holder.itemImageView);
+        } catch (Exception e) {
+            Log.d("MainAdapter", "onBindViewHolder: " + e.getMessage());
+        }
+        holder.constraintLayout.setOnClickListener(v -> listener.onItemClicked(url, item.getTitle(), item.getMessage()));
     }
 
     @Override

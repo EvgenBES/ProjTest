@@ -31,14 +31,4 @@ public class InfoActivity extends BaseActivity implements InfoView {
         infoTextTitle.setText(title);
         infoTextMessage.setText(message);
     }
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
-    }
 }

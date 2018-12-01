@@ -26,15 +26,15 @@ public class MainActivity extends BaseActivity implements MainView {
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.list);
         progressBar = findViewById(R.id.progress);
-        presenter = new MainPresenter(this, new FindItemsInteractor());
+        presenter = new MainPresenter(this);
+        init();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.onResume();
+    public void init() {
+        showProgress();
+        presenter.init();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -58,6 +59,7 @@ public class MainActivity extends BaseActivity implements MainView {
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
     }
+
 
     @Override
     public void setItems(List<Item> items) {

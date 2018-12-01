@@ -12,6 +12,8 @@ public interface MainView {
 
     void hideProgress();
 
+    void init();
+
     void setItems(List<Item> items);
 
     void startInfoActivity(String url, String title, String message);

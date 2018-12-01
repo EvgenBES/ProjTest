@@ -1,8 +1,6 @@
 package com.example.fox.projtest.data.repositories.usecases;
 
 
-import com.example.fox.projtest.data.model.photo.PhotoResponse;
-import com.example.fox.projtest.data.model.post.PostResponse;
 import com.example.fox.projtest.data.repositories.repository.ItemRepository;
 import com.example.fox.projtest.di.executors.PostExecutionThread;
 import com.example.fox.projtest.entity.Item;
@@ -25,23 +23,16 @@ public class GetItemUseCase extends BaseUseCase {
     }
 
 
-    public Observable<List<PostResponse>> getPosts() {
+    public Observable<List<Item>> getPosts() {
         return itemRepository
                 .getPosts()
                 .subscribeOn(executionThread)
                 .observeOn(postExecutionThread);
     }
 
-    public Observable<PhotoResponse> getPhotos() {
+    public Observable<List<String>> getPhotos() {
         return itemRepository
                 .getPhotos()
-                .subscribeOn(executionThread)
-                .observeOn(postExecutionThread);
-    }
-
-    public Observable<List<Item>> getAll() {
-        return itemRepository
-                .getAll()
                 .subscribeOn(executionThread)
                 .observeOn(postExecutionThread);
     }
